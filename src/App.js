@@ -1,50 +1,22 @@
-import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Header, Cart, Home, Footer } from './containers';
+import { Header, Checkout, Cart, Home, Footer } from './containers';
 import { Login } from './components';
-import { db, auth } from './firebase';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { useGlobalContext } from './Context';
 
 const App = () => {
-	const [cartItems, setCartItems] = useState([]);
-	const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
-
-	useEffect(() => {
-		getCartItems();
-	}, []);
-
-	//get cart-items
-	const getCartItems = async () => {
-		onSnapshot(collection(db, 'cartitems'), (snapshot) => {
-			const tempCartItems = snapshot.docs.map((doc) => ({
-				itemId: doc.id,
-				...doc.data(),
-			}));
-			setCartItems(tempCartItems);
-		});
-	};
-
-	const signOut = async () => {
-		try {
-			await auth.signOut();
-			localStorage.removeItem('user');
-			setUser(null);
-		} catch (error) {
-			console.error('Error signing out:', error);
-		}
-	};
-
+	const { user, signOut } = useGlobalContext();
 	return (
 		<Router>
 			<div className='bg-[#e3e6e6]'>
 				{!user ? (
-					<Login setUser={setUser} />
+					<Login />
 				) : (
 					<div>
-						<Header user={user} signOut={signOut} cartItems={cartItems} />
+						<Header user={user} signOut={signOut} />
 						<Routes>
 							<Route path='/' element={<Home />} />
-							<Route path='/cart' element={<Cart cartItems={cartItems} />} />
+							<Route path='/cart' element={<Cart />} />
+							<Route path='/checkout' element={<Checkout />} />
 						</Routes>
 						<Footer />
 					</div>

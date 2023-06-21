@@ -1,24 +1,8 @@
-import { auth, provider } from '../firebase';
-import { getAuth, signInWithPopup } from 'firebase/auth';
+import { useGlobalContext } from '../Context';
 
-const Login = ({ setUser }) => {
-	const signIn = async () => {
-		try {
-			await signInWithPopup(auth, provider);
-			const user = getAuth().currentUser;
-			let newUser = {
-				name: user.displayName,
-				email: user.email,
-				photo: user.photoURL,
-			};
+const Login = () => {
+	const { signIn } = useGlobalContext();
 
-			// Access the user details
-			localStorage.setItem('user', JSON.stringify(newUser));
-			setUser(newUser);
-		} catch (error) {
-			console.error('Error signing in with Google:', error);
-		}
-	};
 	return (
 		<div className='flex flex-col justify-center w-full h-screen -mt-4'>
 			<img
@@ -31,6 +15,7 @@ const Login = ({ setUser }) => {
 				<h3 className='my-3 text-3xl font-semibold'>Sign-In</h3>
 
 				<button
+					type='button'
 					className='w-full p-2 my-3 text-xs border border-yellow-300 rounded-sm button md:text-sm bg-gradient-to-b from-yellow-200 to-yellow-400 focus:outline-none focus:ring-1 focus:ring-yellow-500 active:from-yellow-500'
 					onClick={signIn}
 				>

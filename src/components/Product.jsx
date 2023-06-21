@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { db } from '../firebase';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { HiOutlineCheck, HiStar } from 'react-icons/hi';
-import { BiPound } from 'react-icons/bi';
+import { BiRupee } from 'react-icons/bi';
+import { useGlobalContext } from '../Context';
 
 const MAX_RATING = 5;
 const MIN_RATING = 1;
@@ -10,6 +11,8 @@ const MIN_RATING = 1;
 const Product = ({ id, title, price, description, category, image }) => {
 	const [rating] = useState(Math.floor(Math.random() * (MAX_RATING - MIN_RATING + 1)) + MIN_RATING);
 	const [hasPrime] = useState(Math.random() < 0.5);
+
+	const { user } = useGlobalContext();
 
 	const addToCart = async () => {
 		const docRef = doc(db, 'cartitems', `${id}`);
@@ -25,6 +28,7 @@ const Product = ({ id, title, price, description, category, image }) => {
 				image: image,
 				price: price,
 				quantity: 1,
+				userId: user.id,
 			});
 		}
 	};
@@ -47,7 +51,7 @@ const Product = ({ id, title, price, description, category, image }) => {
 			<p className='my-2 text-xs line-clamp-2'>{description}</p>
 
 			<div className='flex items-center mb-5'>
-				<BiPound className='mt-[5px]' />
+				<BiRupee className='mt-0.5' />
 				{price}
 			</div>
 
@@ -60,6 +64,7 @@ const Product = ({ id, title, price, description, category, image }) => {
 			)}
 
 			<button
+				type='button'
 				className='w-full p-2 m-auto text-xs border border-yellow-300 rounded-sm md:text-sm bg-gradient-to-b from-yellow-200 to-yellow-400 focus:outline-none focus:ring-1 focus:ring-yellow-500 active:from-yellow-500'
 				onClick={addToCart}
 			>

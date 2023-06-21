@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useGlobalContext } from '../Context';
 import { Link } from 'react-router-dom';
 import {
 	HiOutlineUser,
@@ -8,7 +9,8 @@ import {
 	HiOutlineLocationMarker,
 } from 'react-icons/hi';
 
-const Header = ({ cartItems, signOut, user }) => {
+const Header = ({ signOut, user }) => {
+	const { cartItems } = useGlobalContext();
 	const [popUp, setPopUp] = useState(false);
 
 	return (
@@ -63,10 +65,23 @@ const Header = ({ cartItems, signOut, user }) => {
 
 					{/* sign out pop up */}
 					{popUp && (
-						<div className='absolute z-30 w-36 p-3 mx-auto mt-3 mb-12 text-black bg-gray-100 border border-gray-300 border-solid rounded-md bottom-[-198px] shadow-md'>
-							<h3 className='my-1 text-lg font-semibold'>Sign-Out here</h3>
-
+						<div className='absolute z-30 p-3 mx-auto mt-3 mb-12 text-black bg-gray-100 border border-gray-300 border-solid rounded-md bottom-[-230px] shadow-md'>
+							<div className='flex-shrink-0 block mb-5 group'>
+								<div className='flex items-center'>
+									<img
+										className='inline-block flex-shrink-0 h-[3.875rem] w-[3.875rem] rounded-full'
+										src={user.photo}
+										alt='user_image'
+									/>
+									<div class='ml-3 '>
+										<h3 class='font-semibold text-gray-800 '>{user.name}</h3>
+										<p class='text-sm font-medium text-gray-400'>{user.email}</p>
+									</div>
+								</div>
+							</div>
+							<h3 className='font-semibold'>Sign-Out here</h3>
 							<button
+								type='button'
 								className='w-full p-2 my-2 text-xs border border-yellow-300 rounded-sm md:text-sm bg-gradient-to-b from-yellow-200 to-yellow-400 focus:outline-none focus:ring-1 focus:ring-yellow-500 active:from-yellow-500'
 								onClick={signOut}
 							>
